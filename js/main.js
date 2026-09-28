@@ -32,3 +32,38 @@ function arrangeServiceCards() {
 
 window.addEventListener('load', arrangeServiceCards);
 window.addEventListener('resize', arrangeServiceCards);
+
+// Mantiene visible en la navegación la sección que está recorriendo el usuario.
+const mainNavLinks = [...document.querySelectorAll('#navLinks > li > a')];
+const observedSections = [...document.querySelectorAll('main > section[id]')];
+
+function setActiveNav(sectionId) {
+  mainNavLinks.forEach((link) => {
+    const isCurrent = link.getAttribute('href') === `#${sectionId}`;
+    link.classList.toggle('is-active', isCurrent);
+    if (isCurrent) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+}
+
+if ('IntersectionObserver' in window && observedSections.length) {
+  const visibleSections = new Map();
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) visibleSections.set(entry.target.id, entry.intersectionRatio);
+      else visibleSections.delete(entry.target.id);
+    });
+
+    const current = [...visibleSections.entries()].sort((a, b) => b[1] - a[1])[0];
+    if (current) setActiveNav(current[0]);
+  }, { rootMargin: '-22% 0px -55% 0px', threshold: [0, .15, .35, .6] });
+
+  observedSections.forEach((section) => sectionObserver.observe(section));
+} else {
+  setActiveNav('inicio');
+}
+
+mainNavLinks.forEach((link) => link.addEventListener('click', () => {
+  const target = link.getAttribute('href');
+  if (target && target.startsWith('#')) setActiveNav(target.slice(1));
+}));
