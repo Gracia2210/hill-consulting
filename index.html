@@ -145,10 +145,11 @@
 
     <article class="consultant-profile">
       <div class="consultant-identity">
-        <div class="consultant-monogram" aria-hidden="true">AT</div>
-        <span class="consultant-label">Consultor principal</span>
-        <h3>Ing. Adalson Javier Torres Zegarra</h3>
-        <p>Ingeniero de Minas · CIP 40153</p>
+        <div class="consultant-title">
+          <span class="consultant-label">Consultor principal</span>
+          <h3>Ing. Adalson Javier Torres Zegarra</h3>
+          <p>Ingeniero de Minas · CIP 40153</p>
+        </div>
         <a class="linkedin-link" href="https://www.linkedin.com/in/adalson-javier-torres-zegarra-51821750/" target="_blank" rel="noopener noreferrer" aria-label="Buscar a Adalson Javier Torres Zegarra en LinkedIn">
           <span class="linkedin-mark" aria-hidden="true">in</span>
           Ver en LinkedIn
@@ -194,7 +195,16 @@
       <p class="catalog-intro">Soluciones especializadas para proyectos de construcción, minería, saneamiento, gestión ambiental y seguridad ocupacional.</p>
     </div>
 
-    <div class="services-grid">
+    <div class="service-carousel-controls" aria-label="Controles del catálogo de servicios">
+      <span>Deslice para conocer todos los servicios</span>
+      <div class="service-carousel-actions">
+        <div class="service-dots" id="serviceDots" aria-label="Posición en el catálogo"></div>
+      </div>
+    </div>
+
+    <div class="service-carousel-shell">
+      <button class="service-arrow service-arrow-prev" id="servicesPrev" type="button" aria-label="Ver servicios anteriores"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
+      <div class="services-grid">
       <article class="service catalog-card" id="servicio-obras-civiles">
         <div class="service-visual service-visual-civil"><span>Obras civiles</span></div>
         <h3>EJECUCION Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES</h3>
@@ -256,6 +266,8 @@
           <li>Reglamento de Seguridad y Salud Ocupacional en Minería D.S.N°023-2017-EM.</li>
         </ul>
       </article>
+      </div>
+      <button class="service-arrow service-arrow-next" id="servicesNext" type="button" aria-label="Ver más servicios"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
     </div>
   </div>
 </section>
