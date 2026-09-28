@@ -39,3 +39,9 @@ section{padding:88px 0}.soft{background:var(--bg)}.section-head{display:flex;jus
 .catalog-card:nth-child(1) h3,.catalog-card:nth-child(2) h3,.catalog-card:nth-child(3) h3,.catalog-card:nth-child(4) h3,.catalog-card:nth-child(5) h3{display:block;position:absolute;top:0;left:0;right:0;height:245px;margin:0;padding:0 24px 24px;display:flex;align-items:flex-end;color:#fff;font-family:'Source Sans 3',sans-serif;font-size:1.32rem;font-weight:700;line-height:1.15;letter-spacing:.01em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.65);z-index:3}
 .catalog-card:nth-child(2):after{display:none!important;content:none}
 @media(max-width:640px){.catalog-card:nth-child(1) h3,.catalog-card:nth-child(2) h3,.catalog-card:nth-child(3) h3,.catalog-card:nth-child(4) h3,.catalog-card:nth-child(5) h3{font-size:1.18rem}}
+/* Animación sutil de imágenes del catálogo */
+.catalog-card .service-visual{transform:scale(1);filter:saturate(.94);transition:transform .7s cubic-bezier(.2,.65,.3,1),filter .7s ease}
+.catalog-card:hover .service-visual{transform:scale(1.035);filter:saturate(1.05)}
+.catalog-card h3{transition:transform .45s ease,text-shadow .45s ease}
+.catalog-card:hover h3{transform:translateY(-4px);text-shadow:0 4px 16px rgba(0,0,0,.72)}
+@media(prefers-reduced-motion:reduce){.catalog-card .service-visual,.catalog-card h3{transition:none}.catalog-card:hover .service-visual,.catalog-card:hover h3{transform:none}}
