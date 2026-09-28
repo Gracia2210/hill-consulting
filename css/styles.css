@@ -232,11 +232,11 @@ a:focus-visible,button:focus-visible,.catalog-card:focus-visible{outline:3px sol
 #servicios .services-grid{display:flex;grid-auto-rows:unset;grid-auto-flow:unset;align-items:stretch;gap:24px;overflow-x:auto;overflow-y:hidden;padding:8px 2px 12px;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-inline:contain;scrollbar-width:none;cursor:grab}
 #servicios .services-grid:active{cursor:grabbing}
 #servicios .services-grid::-webkit-scrollbar{display:none}
-#servicios .services-grid:after{content:"";display:block;flex:0 0 calc(66.666% + 16px)}
+#servicios .services-grid:after{content:none;display:none}
 #servicios .catalog-card{flex:0 0 calc((100% - 48px)/3);min-width:0;scroll-snap-align:start;scroll-snap-stop:always;opacity:.78;transform:scale(.975);transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease}
 #servicios .catalog-card.is-current{opacity:1;transform:scale(1);box-shadow:0 14px 30px rgba(111,147,168,.17)}
-@media(max-width:980px){#servicios .catalog-card{flex-basis:calc((100% - 24px)/2)}#servicios .services-grid:after{flex-basis:calc(50% + 12px)}}
-@media(max-width:640px){.service-carousel-controls{align-items:flex-end}.service-carousel-controls>span{display:none}.service-carousel-actions{width:100%;justify-content:center}.service-dots{margin-right:0}.service-arrow{top:106px;width:32px;height:44px}.service-arrow-prev{left:-7px}.service-arrow-next{right:-7px}#servicios .services-grid{gap:14px;margin-right:-12px;padding-right:12px}#servicios .catalog-card{flex-basis:86vw}#servicios .services-grid:after{flex-basis:14vw}}
+@media(max-width:980px){#servicios .catalog-card{flex-basis:calc((100% - 24px)/2)}}
+@media(max-width:640px){.service-carousel-controls{align-items:flex-end}.service-carousel-controls>span{display:none}.service-carousel-actions{width:100%;justify-content:center}.service-dots{margin-right:0}.service-arrow{top:106px;width:32px;height:44px}.service-arrow-prev{left:-7px}.service-arrow-next{right:-7px}#servicios .services-grid{gap:14px;margin-right:-12px;padding-right:12px}#servicios .catalog-card{flex-basis:86vw}}
 
 /* Menú desplegable de servicios */
 .navlinks>li{position:relative}
@@ -320,6 +320,8 @@ h2,.card h3,.mv-box h3,.project-card h3,.link-group h3,.consultant-identity h3,.
 .btn-primary{background:var(--blue)}
 .btn-primary:hover{background:var(--navy)}
 .navlinks .contact-btn,.contact-info,footer{background:var(--navy)}
+.contact-row:before{color:#DCEEF8;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);font-variation-settings:"FILL" 1,"wght" 500,"GRAD" 0,"opsz" 24;box-shadow:0 2px 8px rgba(37,71,96,.16)}
+.contact-row:hover:before{background:#DCEEF8;color:#2F5F8D;border-color:#DCEEF8}
 .consultant-profile{display:flex;flex-direction:column;border-top:3px solid var(--blue)}
 .consultants-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
 .consultant-profile{background:var(--white);border:1px solid var(--border);border-top:3px solid var(--blue);box-shadow:0 8px 22px rgba(74,126,175,.08)}
