@@ -416,6 +416,9 @@ body.modal-open{overflow:hidden}
 .consultants-list .consultant-identity p{color:#6E6E6E}
 .consultants-list .consultant-highlights{color:#4A4A4A}
 .consultants-list .consultant-highlights strong{color:#6E6E6E}
+.consultants-list .consultant-highlights strong{color:#4A7EAF!important}
+.consultants-list .consultant-highlights span{color:#4A4A4A!important}
+.consultants-list .consultant-highlights span:before{color:#57A8D8!important}
 .consultants-list .profile-open{color:#4B9ACA}
 .consultants-list .profile-open:hover{color:#4A7EAF}
 .profile-modal-dialog .consultant-profile{background:var(--white);border-top:4px solid #57A8D8}
@@ -428,6 +431,9 @@ body.modal-open{overflow:hidden}
 .profile-modal-dialog .consultant-identity .linkedin-link{color:#0a66c2;border:0;background:transparent}
 .profile-modal-dialog .consultant-identity .linkedin-link>span:last-child{color:#0a66c2!important}
 .profile-modal-dialog .consultant-identity .linkedin-mark{color:#fff!important}
+.profile-modal-dialog .consultant-highlights strong{color:#2f5f8d!important}
+.profile-modal-dialog .consultant-highlights span{color:#3F4A50!important}
+.profile-modal-dialog .consultant-highlights span:before{color:#4A7EAF!important}
 .profile-modal-close{font-size:0}
 .profile-modal-close:after{content:"×";font-size:1.7rem;line-height:1}
 @media(max-width:700px){
