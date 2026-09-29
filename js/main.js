@@ -270,6 +270,7 @@ document.querySelectorAll('#socios .partner-category').forEach((category) => {
   category.addEventListener('mouseleave', start);
   grid.addEventListener('pointerdown', stop);
   grid.addEventListener('pointerup', start);
+  grid.addEventListener('touchend', start, { passive: true });
   window.addEventListener('resize', () => { updateControls(); start(); });
   updateControls();
   start();
