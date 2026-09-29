@@ -1650,4 +1650,10 @@ header.is-scrolled .brand-logo-white {
     display: block !important;
     opacity: 1 !important;
   }
+
+  header.is-scrolled .navlinks .contact-btn,
+  header.is-scrolled .navlinks .contact-btn:hover,
+  header.is-scrolled .navlinks .contact-btn:focus {
+    color: #fff !important;
+  }
 }
