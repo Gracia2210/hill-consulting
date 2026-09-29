@@ -2125,6 +2125,11 @@ header.is-scrolled .brand-logo-white {
     padding .65s ease, opacity .45s ease, transform .65s ease;
 }
 
+/* Fondo gris claro para el contenido con viñetas de Servicios. */
+#servicios .catalog-card ul {
+  background: #d9dee2;
+}
+
 @media (min-width: 701px) {
   #obras.works-showcase .work-category.is-open {
     grid-column: 1 / -1;
