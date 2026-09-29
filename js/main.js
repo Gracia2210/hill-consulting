@@ -28,6 +28,36 @@ servicesToggle?.addEventListener('click', (event) => {
   servicesToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 });
 
+const backToTop = document.getElementById('backToTop');
+const updateBackToTop = () => {
+  backToTop?.classList.toggle('is-visible', window.scrollY > 420);
+};
+
+backToTop?.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+window.addEventListener('scroll', updateBackToTop, { passive: true });
+updateBackToTop();
+
+// Franja única de socios estratégicos debajo del hero.
+const partnersShowcase = document.getElementById('socios');
+const heroSection = document.getElementById('inicio');
+if (partnersShowcase && heroSection) {
+  heroSection.after(partnersShowcase);
+  partnersShowcase.classList.add('partners-showcase');
+
+  const partnerCategories = partnersShowcase.querySelector('.partner-categories');
+  const partnerCards = [...partnersShowcase.querySelectorAll('.partner')];
+  if (partnerCategories && partnerCards.length) {
+    const track = document.createElement('div');
+    track.className = 'partner-marquee-track';
+    partnerCards.forEach((card) => track.appendChild(card));
+    partnerCards.forEach((card) => track.appendChild(card.cloneNode(true)));
+    partnerCategories.replaceChildren(track);
+  }
+}
+
 const servicesGrid = document.querySelector('.services-grid');
 const serviceCards = servicesGrid ? [...servicesGrid.querySelectorAll('.catalog-card')] : [];
 
