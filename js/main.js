@@ -104,8 +104,11 @@ if (worksSection) {
       'Cierre de la Relavera Higospampa_despues.png',
       'foto10.png', 'foto6.png', 'foto7.png'
     ]],
-    ['Cierre de la Relavera Ponogon', 'Relavera Ponogon', [
-      'RELAVERA PONOGON_antes.png', 'RELAVERA PONOGON_despues.png'
+    ['Cierre de la Desmontera Esperanza', 'Cierre de la desmontera Esperanza', [
+      'Cierre de la desmontera Esperanza_antes.jpeg',
+      'Cierre de la desmontera Esperanza_durante.jpeg',
+      'Cierre de la desmontera Esperanza_durante2.jpeg',
+      'Cierre de la desmontera Esperanza_despues.jpeg'
     ]],
     ['Cierre de la Relavera Catedral I', 'Relavera Catedral I', [
       'Relavera Catedral I_antes.png', 'Relavera Catedral I_despues.png'
@@ -125,6 +128,9 @@ if (worksSection) {
     ['Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas de Relaveras', 'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas', [
       'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 2.jpeg',
       'foto8.png', 'foto9.png'
+    ]],
+    ['Ejecución y elaboración de expedientes técnicos de obras civiles', 'EJECUCIÓN Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES', [
+      'EJECUCIÓN Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES.jpeg'
     ]]
   ].map(([title, folder, files]) => [
     normalizeWorkTitle(title),
@@ -162,6 +168,7 @@ if (worksSection) {
         <span>Obra realizada</span>
         <h3 id="workModalTitle"></h3>
       </header>
+      <ul class="work-modal-summary"></ul>
       <div class="work-gallery-main">
         <button class="work-gallery-arrow work-gallery-prev" type="button" aria-label="Foto anterior">&#8249;</button>
         <img alt="">
@@ -173,6 +180,7 @@ if (worksSection) {
   document.body.appendChild(workModal);
 
   const modalTitle = workModal.querySelector('#workModalTitle');
+  const modalSummary = workModal.querySelector('.work-modal-summary');
   const modalMain = workModal.querySelector('.work-gallery-main');
   const modalImage = modalMain.querySelector('img');
   const modalStage = modalMain.querySelector('.work-gallery-stage');
@@ -196,10 +204,17 @@ if (worksSection) {
     });
   };
 
-  const openWorkModal = (title, images) => {
+  const openWorkModal = (title, images, summary = []) => {
     currentWorkImages = images;
     currentWorkImage = 0;
     modalTitle.textContent = title;
+    modalSummary.replaceChildren();
+    modalSummary.hidden = !summary.length;
+    summary.forEach((point) => {
+      const item = document.createElement('li');
+      item.textContent = point.trim();
+      modalSummary.appendChild(item);
+    });
     modalThumbs.replaceChildren();
     modalMain.classList.toggle('is-empty', !images.length);
     modalPrev.hidden = images.length < 2;
@@ -246,22 +261,27 @@ if (worksSection) {
     if (event.key === 'ArrowRight') showWorkImage(currentWorkImage + 1);
   });
 
-  worksSection.querySelectorAll('.project-card').forEach((categoryCard, index) => {
+  worksSection.querySelectorAll('.project-card').forEach((categoryCard, categoryIndex) => {
     categoryCard.querySelectorAll(':scope > .project-image-placeholder').forEach((placeholder) => placeholder.remove());
     const title = categoryCard.querySelector('h3');
     const list = categoryCard.querySelector('ul');
     if (!title || !list) return;
+    const categoryTitle = title.textContent.trim();
 
         const category = document.createElement('div');
         category.className = 'work-category';
-        category.id = `obras-categoria-${index + 1}`;
+        if (categoryIndex === 2) category.classList.add('direct-gallery');
+        category.id = `obras-categoria-${categoryIndex + 1}`;
     category.innerHTML = `<h3>${title.textContent}</h3>`;
     const grid = document.createElement('div');
     grid.className = 'work-items';
 
-    [...list.querySelectorAll('li')].forEach((item, index) => {
+    [...list.querySelectorAll('li')].forEach((item, workIndex) => {
       const workTitle = item.textContent.trim().replace(/\.$/, '');
       const workImages = workGalleryData.get(normalizeWorkTitle(workTitle)) || [];
+      const isGeneralCivilWork = categoryIndex === 2;
+      const displayTitle = isGeneralCivilWork ? categoryTitle : workTitle;
+      const summary = isGeneralCivilWork ? workTitle.split(';') : [];
       const card = document.createElement('article');
       card.className = 'work-item';
       card.setAttribute('tabindex', '0');
@@ -272,18 +292,19 @@ if (worksSection) {
           ${workImages.length ? `<img src="${workImages[0].src}" alt="${workTitle}"><span>Ver proyecto</span>` : ''}
         </div>
         <div class="work-item-content">
-          <span class="work-number">${String(index + 1).padStart(2, '0')}</span>
-          <h4>${workTitle}</h4>
+          <span class="work-number">${String(workIndex + 1).padStart(2, '0')}</span>
+          <h4>${displayTitle}</h4>
+          ${summary.length ? `<ul class="work-summary-list">${summary.map((point) => `<li>${point.trim()}</li>`).join('')}</ul>` : ''}
         </div>`;
       card.addEventListener('click', (event) => {
         event.stopPropagation();
-        openWorkModal(workTitle, workImages);
+        openWorkModal(displayTitle, workImages, summary);
       });
       card.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           event.stopPropagation();
-          openWorkModal(workTitle, workImages);
+          openWorkModal(displayTitle, workImages, summary);
         }
       });
       grid.appendChild(card);
@@ -305,11 +326,19 @@ if (worksSection) {
     };
     category.addEventListener('click', (event) => {
       if (event.target.closest('.work-item')) return;
+      if (category.classList.contains('direct-gallery')) {
+        grid.querySelector('.work-item')?.click();
+        return;
+      }
       toggleCategory();
     });
     category.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
+        if (category.classList.contains('direct-gallery')) {
+          grid.querySelector('.work-item')?.click();
+          return;
+        }
         toggleCategory();
       }
     });
