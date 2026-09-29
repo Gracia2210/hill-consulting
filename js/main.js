@@ -1,13 +1,32 @@
 const btn = document.getElementById('menuBtn');
 const nav = document.getElementById('navLinks');
+const servicesDropdown = document.querySelector('.nav-dropdown');
+const servicesToggle = document.querySelector('.nav-dropdown-toggle');
 btn.addEventListener('click', () => {
   nav.classList.toggle('open');
   btn.textContent = nav.classList.contains('open') ? '×' : '☰';
+  btn.setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
+  if (!nav.classList.contains('open')) {
+    servicesDropdown?.classList.remove('submenu-open');
+    servicesToggle?.setAttribute('aria-expanded', 'false');
+  }
 });
 document.querySelectorAll('#navLinks a').forEach((a) => a.addEventListener('click', () => {
+  if (a === servicesToggle && window.matchMedia('(max-width: 980px)').matches) return;
   nav.classList.remove('open');
   btn.textContent = '☰';
+  btn.setAttribute('aria-expanded', 'false');
+  servicesDropdown?.classList.remove('submenu-open');
+  servicesToggle?.setAttribute('aria-expanded', 'false');
 }));
+
+servicesToggle?.setAttribute('aria-expanded', 'false');
+servicesToggle?.addEventListener('click', (event) => {
+  if (!window.matchMedia('(max-width: 980px)').matches) return;
+  event.preventDefault();
+  const isOpen = servicesDropdown.classList.toggle('submenu-open');
+  servicesToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+});
 
 const servicesGrid = document.querySelector('.services-grid');
 const serviceCards = servicesGrid ? [...servicesGrid.querySelectorAll('.catalog-card')] : [];

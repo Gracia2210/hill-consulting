@@ -456,3 +456,154 @@ body.modal-open{overflow:hidden}
   letter-spacing: .14em;
   text-transform: uppercase;
 }
+
+/* Ajustes finales responsive: mantienen intacta la vista de escritorio */
+@media (max-width: 700px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .container,
+  .hero > .container {
+    width: calc(100% - 24px);
+    max-width: none;
+  }
+
+  .topbar .container {
+    gap: 3px;
+    font-size: .76rem;
+    line-height: 1.35;
+  }
+
+  .topbar .container span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .brand img {
+    width: min(220px, calc(100vw - 82px));
+    max-height: 58px;
+  }
+
+  .section-head {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: clamp(1.85rem, 9vw, 2.5rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.35rem, 12vw, 4rem);
+    overflow-wrap: anywhere;
+  }
+
+  .hero-card,
+  .card,
+  .project-card,
+  .link-group,
+  .whatsapp-box,
+  .contact-info {
+    padding: 22px;
+  }
+
+  .hero-card li {
+    align-items: flex-start;
+  }
+
+  .hero-card li:before {
+    flex: 0 0 34px;
+  }
+
+  .consultants-carousel-shell,
+  .service-carousel-shell {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .consultants-list .consultant-profile,
+  #servicios .catalog-card {
+    flex-basis: 100%;
+  }
+
+  .consultants-list .consultant-profile {
+    height: auto;
+    min-height: 390px;
+  }
+
+  .consultant-identity h3,
+  .catalog-card h3,
+  .project-card h3,
+  .link-group h3 {
+    overflow-wrap: anywhere;
+  }
+
+  #socios .partner-category {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .contact-row {
+    overflow-wrap: anywhere;
+  }
+
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Menú móvil: el catálogo de servicios funciona como acordeón */
+@media (max-width: 980px) {
+  .navlinks {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .nav-dropdown .nav-submenu {
+    display: none;
+    width: 100%;
+    margin: 3px 0 5px;
+    padding: 4px 0 4px 12px;
+    background: #f3f6f8;
+    border-top: 0;
+    border-left: 2px solid var(--copper);
+    box-shadow: none;
+  }
+
+  .nav-dropdown.submenu-open .nav-submenu {
+    display: block;
+  }
+
+  .nav-dropdown.submenu-open > .nav-dropdown-toggle .material-symbols-outlined {
+    transform: rotate(180deg);
+  }
+}
+
+@media (max-width: 380px) {
+  .container,
+  .hero > .container {
+    width: calc(100% - 20px);
+  }
+
+  .card,
+  .project-card,
+  .link-group,
+  .whatsapp-box,
+  .contact-info,
+  .hero-card {
+    padding: 18px;
+  }
+
+  .service-carousel-shell,
+  .consultants-carousel-shell {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
