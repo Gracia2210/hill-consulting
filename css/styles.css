@@ -450,3 +450,9 @@ body.modal-open{overflow:hidden}
   .actions{width:100%}
   .actions .btn{width:100%;max-width:100%}
 }
+.kicker {
+  color: #B9824F !important;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
