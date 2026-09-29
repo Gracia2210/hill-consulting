@@ -89,6 +89,163 @@ if (partnersShowcase && heroSection) {
 const worksSection = document.getElementById('obras');
 if (worksSection) {
   worksSection.classList.add('works-showcase');
+
+  const normalizeWorkTitle = (value) => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/gi, ' ')
+    .trim()
+    .toLowerCase();
+
+  const workGalleryData = new Map([
+    ['Cierre de la Relavera Higospampa', 'Cierre de la Relavera Higospampa', [
+      'Cierre de la Relavera Higospampa_antes.png',
+      'Cierre de la Relavera Higospampa_durante2.png',
+      'Cierre de la Relavera Higospampa_despues.png',
+      'foto10.png', 'foto6.png', 'foto7.png'
+    ]],
+    ['Cierre de la Relavera Ponogon', 'Relavera Ponogon', [
+      'RELAVERA PONOGON_antes.png', 'RELAVERA PONOGON_despues.png'
+    ]],
+    ['Cierre de la Relavera Catedral I', 'Relavera Catedral I', [
+      'Relavera Catedral I_antes.png', 'Relavera Catedral I_despues.png'
+    ]],
+    ['Cierre de la Relavera Vista Bella', 'Relavera Vista Bella Baja', [
+      'RELAVERA VISTA BELLA_antes.png',
+      'Relavera Vista Bella Baja_durante.png',
+      'RELAVERA VISTA BELLA_despues.png'
+    ]],
+    ['Cierre de la Relavera Catedral', 'Relavera Catedral', [
+      'Relavera Catedral_antes.png', 'Relavera Catedral_despues.png'
+    ]],
+    ['Instalación de Sistemas de Agua Potable y Alcantarillado', 'Instalación de Sistemas de Agua Potable y Alcantarillado', [
+      'Instalación de Sistemas de Agua Potable y Alcantarillado 1.png',
+      'El porvenir - PETAR.png'
+    ]],
+    ['Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas de Relaveras', 'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas', [
+      'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 2.jpeg',
+      'foto8.png', 'foto9.png'
+    ]]
+  ].map(([title, folder, files]) => [
+    normalizeWorkTitle(title),
+    files.map((file, fileIndex) => {
+      const normalizedFile = normalizeWorkTitle(file);
+      let stage = 'Proceso';
+      let stageOrder = 1;
+      if (normalizedFile.includes('antes')) {
+        stage = 'Antes';
+        stageOrder = 0;
+      } else if (normalizedFile.includes('durante')) {
+        stage = 'Durante';
+        stageOrder = 1;
+      } else if (normalizedFile.includes('despues')) {
+        stage = 'Después';
+        stageOrder = 2;
+      }
+      return {
+        src: encodeURI(`img/obras/${folder}/${file}`),
+        stage,
+        stageOrder,
+        originalOrder: fileIndex
+      };
+    }).sort((a, b) => a.stageOrder - b.stageOrder || a.originalOrder - b.originalOrder)
+  ]));
+
+  const workModal = document.createElement('div');
+  workModal.className = 'work-modal';
+  workModal.hidden = true;
+  workModal.innerHTML = `
+    <div class="work-modal-backdrop" data-work-close></div>
+    <section class="work-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="workModalTitle">
+      <button class="work-modal-close" type="button" aria-label="Cerrar galería" data-work-close>&times;</button>
+      <header class="work-modal-header">
+        <span>Obra realizada</span>
+        <h3 id="workModalTitle"></h3>
+      </header>
+      <div class="work-gallery-main">
+        <button class="work-gallery-arrow work-gallery-prev" type="button" aria-label="Foto anterior">&#8249;</button>
+        <img alt="">
+        <span class="work-gallery-stage"></span>
+        <button class="work-gallery-arrow work-gallery-next" type="button" aria-label="Foto siguiente">&#8250;</button>
+      </div>
+      <div class="work-gallery-thumbs" aria-label="Fotografías de la obra"></div>
+    </section>`;
+  document.body.appendChild(workModal);
+
+  const modalTitle = workModal.querySelector('#workModalTitle');
+  const modalMain = workModal.querySelector('.work-gallery-main');
+  const modalImage = modalMain.querySelector('img');
+  const modalStage = modalMain.querySelector('.work-gallery-stage');
+  const modalThumbs = workModal.querySelector('.work-gallery-thumbs');
+  const modalPrev = workModal.querySelector('.work-gallery-prev');
+  const modalNext = workModal.querySelector('.work-gallery-next');
+  let currentWorkImages = [];
+  let currentWorkImage = 0;
+
+  const showWorkImage = (index) => {
+    if (!currentWorkImages.length) return;
+    currentWorkImage = (index + currentWorkImages.length) % currentWorkImages.length;
+    modalImage.classList.add('is-changing');
+    window.setTimeout(() => {
+      modalImage.src = currentWorkImages[currentWorkImage].src;
+      modalStage.textContent = currentWorkImages[currentWorkImage].stage;
+      modalImage.classList.remove('is-changing');
+    }, 140);
+    modalThumbs.querySelectorAll('button').forEach((thumb, thumbIndex) => {
+      thumb.classList.toggle('is-active', thumbIndex === currentWorkImage);
+    });
+  };
+
+  const openWorkModal = (title, images) => {
+    currentWorkImages = images;
+    currentWorkImage = 0;
+    modalTitle.textContent = title;
+    modalThumbs.replaceChildren();
+    modalMain.classList.toggle('is-empty', !images.length);
+    modalPrev.hidden = images.length < 2;
+    modalNext.hidden = images.length < 2;
+
+    if (images.length) {
+      modalImage.src = images[0].src;
+      modalImage.alt = title;
+      modalStage.textContent = images[0].stage;
+      images.forEach((image, imageIndex) => {
+        const thumb = document.createElement('button');
+        thumb.type = 'button';
+        thumb.className = imageIndex === 0 ? 'is-active' : '';
+        thumb.setAttribute('aria-label', `Ver fotografía de la etapa ${image.stage}`);
+        thumb.innerHTML = `<img src="${image.src}" alt=""><span>${image.stage}</span>`;
+        thumb.addEventListener('click', () => showWorkImage(imageIndex));
+        modalThumbs.appendChild(thumb);
+      });
+    } else {
+      modalImage.removeAttribute('src');
+      modalImage.alt = '';
+      modalStage.textContent = '';
+    }
+
+    workModal.hidden = false;
+    document.body.classList.add('work-modal-open');
+    requestAnimationFrame(() => workModal.classList.add('is-open'));
+    workModal.querySelector('.work-modal-close').focus();
+  };
+
+  const closeWorkModal = () => {
+    workModal.classList.remove('is-open');
+    document.body.classList.remove('work-modal-open');
+    window.setTimeout(() => { workModal.hidden = true; }, 380);
+  };
+
+  workModal.querySelectorAll('[data-work-close]').forEach((control) => control.addEventListener('click', closeWorkModal));
+  modalPrev.addEventListener('click', () => showWorkImage(currentWorkImage - 1));
+  modalNext.addEventListener('click', () => showWorkImage(currentWorkImage + 1));
+  document.addEventListener('keydown', (event) => {
+    if (workModal.hidden) return;
+    if (event.key === 'Escape') closeWorkModal();
+    if (event.key === 'ArrowLeft') showWorkImage(currentWorkImage - 1);
+    if (event.key === 'ArrowRight') showWorkImage(currentWorkImage + 1);
+  });
+
   worksSection.querySelectorAll('.project-card').forEach((categoryCard, index) => {
     categoryCard.querySelectorAll(':scope > .project-image-placeholder').forEach((placeholder) => placeholder.remove());
     const title = categoryCard.querySelector('h3');
@@ -103,14 +260,32 @@ if (worksSection) {
     grid.className = 'work-items';
 
     [...list.querySelectorAll('li')].forEach((item, index) => {
+      const workTitle = item.textContent.trim().replace(/\.$/, '');
+      const workImages = workGalleryData.get(normalizeWorkTitle(workTitle)) || [];
       const card = document.createElement('article');
       card.className = 'work-item';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Ver fotografías de ${workTitle}`);
       card.innerHTML = `
-        <div class="work-image-placeholder"><span>Imagen de la obra ${String(index + 1).padStart(2, '0')}</span></div>
+        <div class="work-image-placeholder${workImages.length ? ' has-image' : ' is-empty'}">
+          ${workImages.length ? `<img src="${workImages[0].src}" alt="${workTitle}"><span>Ver proyecto</span>` : ''}
+        </div>
         <div class="work-item-content">
           <span class="work-number">${String(index + 1).padStart(2, '0')}</span>
-          <h4>${item.textContent}</h4>
+          <h4>${workTitle}</h4>
         </div>`;
+      card.addEventListener('click', (event) => {
+        event.stopPropagation();
+        openWorkModal(workTitle, workImages);
+      });
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          event.stopPropagation();
+          openWorkModal(workTitle, workImages);
+        }
+      });
       grid.appendChild(card);
     });
 

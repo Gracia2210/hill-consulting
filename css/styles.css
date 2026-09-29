@@ -2130,6 +2130,331 @@ header.is-scrolled .brand-logo-white {
   background: #d9dee2;
 }
 
+/* Galería de cada obra realizada. */
+#obras .work-item {
+  cursor: pointer;
+}
+
+#obras .work-image-placeholder.has-image {
+  background: #dfe3e6;
+}
+
+#obras .work-image-placeholder.has-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .65s cubic-bezier(.2,.7,.25,1), filter .45s ease;
+}
+
+#obras .work-image-placeholder.has-image:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(7,31,49,.72));
+}
+
+#obras .work-image-placeholder.has-image span {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  z-index: 2;
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+
+#obras .work-item:hover .work-image-placeholder.has-image img,
+#obras .work-item:focus-visible .work-image-placeholder.has-image img {
+  transform: scale(1.055);
+  filter: saturate(1.08);
+}
+
+#obras .work-image-placeholder.is-empty {
+  background: #eef0f2;
+}
+
+.work-modal[hidden] {
+  display: none;
+}
+
+body.work-modal-open {
+  overflow: hidden;
+}
+
+.work-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .38s ease, visibility .38s ease;
+}
+
+.work-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.work-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6,22,34,.78);
+  backdrop-filter: blur(8px);
+}
+
+.work-modal-dialog {
+  position: relative;
+  width: min(1120px, 100%);
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: 0 30px 90px rgba(0,0,0,.34);
+  transform: translateY(28px) scale(.98);
+  transition: transform .55s cubic-bezier(.2,.75,.25,1);
+}
+
+.work-modal.is-open .work-modal-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.work-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,.5);
+  border-radius: 50%;
+  background: rgba(10,35,53,.2);
+  color: #fff;
+  font: 300 2rem/1 Poppins, sans-serif;
+  cursor: pointer;
+  transition: background-color .25s ease, transform .25s ease;
+}
+
+.work-modal-close:hover {
+  background: var(--blue);
+  transform: rotate(90deg);
+}
+
+.work-modal-header {
+  padding: 34px 78px 30px 42px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.work-modal-header span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--copper);
+  font-size: .67rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.work-modal-header h3 {
+  max-width: 880px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.25rem, 2.2vw, 2rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.work-gallery-main {
+  position: relative;
+  aspect-ratio: 16 / 8.5;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #e7eaec;
+}
+
+.work-gallery-main.is-empty {
+  min-height: 430px;
+  background: #eef0f2;
+}
+
+.work-gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity .28s ease, transform .45s ease;
+}
+
+.work-gallery-main img.is-changing {
+  opacity: 0;
+  transform: scale(.985);
+}
+
+.work-gallery-stage {
+  position: absolute;
+  left: 22px;
+  bottom: 20px;
+  z-index: 2;
+  min-width: 92px;
+  padding: 9px 15px;
+  background: rgba(11,41,66,.9);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-align: center;
+  text-transform: uppercase;
+  backdrop-filter: blur(5px);
+}
+
+.work-gallery-main.is-empty .work-gallery-stage {
+  display: none;
+}
+
+.work-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 48px;
+  height: 58px;
+  border: 0;
+  background: rgba(8,36,56,.68);
+  color: #fff;
+  font: 300 2.2rem/1 Poppins, sans-serif;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color .25s ease, width .25s ease;
+}
+
+.work-gallery-arrow:hover {
+  width: 54px;
+  background: var(--blue);
+}
+
+.work-gallery-prev { left: 0; }
+.work-gallery-next { right: 0; }
+
+.work-gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  padding: 18px;
+  background: #fff;
+}
+
+.work-gallery-thumbs:empty {
+  display: none;
+}
+
+.work-gallery-thumbs button {
+  position: relative;
+  height: 86px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: #e7eaec;
+  opacity: .62;
+  cursor: pointer;
+  transition: opacity .25s ease, border-color .25s ease, transform .25s ease;
+}
+
+.work-gallery-thumbs button span {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
+  padding: 4px 5px;
+  background: rgba(7,31,49,.82);
+  color: #fff;
+  font-size: .56rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.work-gallery-thumbs button:hover,
+.work-gallery-thumbs button.is-active {
+  border-color: var(--blue);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.work-gallery-thumbs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 700px) {
+  .work-modal {
+    padding: 10px;
+  }
+
+  .work-modal-dialog {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+  }
+
+  .work-modal-header {
+    padding: 25px 58px 23px 22px;
+  }
+
+  .work-modal-close {
+    top: 13px;
+    right: 13px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .work-gallery-main {
+    aspect-ratio: 4 / 3;
+  }
+
+  .work-gallery-main.is-empty {
+    min-height: 280px;
+  }
+
+  .work-gallery-arrow {
+    width: 38px;
+    height: 48px;
+  }
+
+  .work-gallery-stage {
+    left: 12px;
+    bottom: 12px;
+    min-width: 78px;
+    padding: 7px 10px;
+    font-size: .62rem;
+  }
+
+  .work-gallery-thumbs {
+    display: flex;
+    overflow-x: auto;
+    padding: 12px;
+  }
+
+  .work-gallery-thumbs button {
+    width: 88px;
+    min-width: 88px;
+    height: 66px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-modal,
+  .work-modal-dialog,
+  .work-gallery-main img,
+  #obras .work-image-placeholder.has-image img {
+    transition: none;
+  }
+}
+
 @media (min-width: 701px) {
   #obras.works-showcase .work-category.is-open {
     grid-column: 1 / -1;
