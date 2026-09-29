@@ -29,8 +29,21 @@ servicesToggle?.addEventListener('click', (event) => {
 });
 
 const backToTop = document.getElementById('backToTop');
+const pageHeader = document.querySelector('header');
+const brand = document.querySelector('.brand');
+const originalLogo = brand?.querySelector('img');
+if (brand && originalLogo) {
+  originalLogo.classList.add('brand-logo-color');
+  originalLogo.src = 'img/logos/hill-logo-color-normalized.png';
+  const whiteLogo = document.createElement('img');
+  whiteLogo.className = 'brand-logo-white';
+  whiteLogo.src = 'img/logos/J_M_Hill_Consulting_-_logo-blancopreview.png';
+  whiteLogo.alt = originalLogo.alt;
+  brand.appendChild(whiteLogo);
+}
 const updateBackToTop = () => {
   backToTop?.classList.toggle('is-visible', window.scrollY > 420);
+  pageHeader?.classList.toggle('is-scrolled', window.scrollY > 24);
 };
 
 backToTop?.addEventListener('click', () => {

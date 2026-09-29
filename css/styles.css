@@ -1325,6 +1325,140 @@ h3,
   }
 }
 
+/* Navbar integrado al hero y blanco al comenzar el scroll */
+@media (min-width: 981px) {
+  .brand {
+    position: relative;
+    display: block;
+    width: 270px;
+    height: 62px;
+    flex: 0 0 270px;
+  }
+
+  .brand-logo-color,
+  .brand-logo-white {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain;
+    object-position: left center;
+    transition: opacity .4s ease;
+  }
+
+  .brand-logo-white {
+    display: none !important;
+  }
+
+  header:not(.is-scrolled) .brand-logo-color {
+    display: none;
+  }
+
+  header:not(.is-scrolled) .brand-logo-white {
+    display: block !important;
+  }
+
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    border-bottom-color: transparent;
+    box-shadow: none;
+    transition: background-color .45s ease, border-color .45s ease, box-shadow .45s ease, backdrop-filter .45s ease;
+  }
+
+  header .navlinks > li > a {
+    color: #fff;
+    transition: color .45s ease, background-color .45s ease;
+  }
+
+  header .navlinks > li > a:hover,
+  header .navlinks > li > a.is-active {
+    color: #fff;
+  }
+
+  header .navlinks > li > a:not(.contact-btn):after {
+    background: #fff;
+  }
+
+  header.is-scrolled {
+    position: fixed;
+    background: rgba(255, 255, 255, .97);
+    border-bottom-color: var(--border);
+    box-shadow: 0 8px 24px rgba(63, 74, 80, .1);
+    backdrop-filter: blur(10px);
+  }
+
+  header.is-scrolled .navlinks > li > a,
+  header.is-scrolled .navlinks > li > a:hover,
+  header.is-scrolled .navlinks > li > a.is-active {
+    color: var(--text);
+  }
+
+  header.is-scrolled .navlinks > li > a:not(.contact-btn):after {
+    background: var(--copper);
+  }
+
+  header.is-scrolled .brand-logo-color {
+    display: block;
+  }
+
+header.is-scrolled .brand-logo-white {
+    display: none !important;
+  }
+}
+
+/* Intercambio cruzado de logos: misma posición y tamaño visual */
+@media (min-width: 981px) {
+  header:not(.is-scrolled) .brand-logo-color,
+  header:not(.is-scrolled) .brand-logo-white,
+  header.is-scrolled .brand-logo-color,
+  header.is-scrolled .brand-logo-white {
+    display: block !important;
+  }
+
+  header:not(.is-scrolled) .brand-logo-color {
+    opacity: 0;
+  }
+
+  header:not(.is-scrolled) .brand-logo-white {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: left center;
+  }
+
+  header.is-scrolled .brand-logo-color {
+    opacity: 1;
+  }
+
+  header.is-scrolled .brand-logo-white {
+    opacity: 0;
+    transform: scale(1);
+    transform-origin: left center;
+  }
+
+  /* El logo blanco conserva su proporción original y comparte el mismo ancho visible */
+  .brand-logo-white {
+    width: 270px !important;
+    height: auto !important;
+    max-width: 270px !important;
+    max-height: none !important;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%) !important;
+    transform-origin: left center;
+  }
+
+  .brand-logo-color,
+  .brand-logo-white {
+    transition: opacity .55s ease, transform .55s ease;
+  }
+}
+
 /* Menú móvil limpio: solo se muestran las tres líneas azules */
 @media (max-width: 980px) {
   .navlinks {
