@@ -637,6 +637,15 @@ body.modal-open{overflow:hidden}
   }
 }
 
+/* Navegación con peso regular */
+.navlinks,
+.navlinks a,
+.navlinks > li > a,
+.navlinks > li > a.is-active,
+.navlinks .contact-btn {
+  font-weight: 400 !important;
+}
+
 /* Botón flotante para volver al inicio */
 .back-to-top {
   position: fixed;
@@ -705,7 +714,15 @@ body.modal-open{overflow:hidden}
 .partners-showcase .section-head h2 {
   font-size: 1.25rem;
   letter-spacing: .12em;
-  text-transform: uppercase;
+  text-transform: none;
+  color: var(--copper);
+}
+
+#socios.partners-showcase .section-head h2 {
+  font-size: .92rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  color: #B9824F;
 }
 
 .partners-showcase .section-head > div {
@@ -883,6 +900,10 @@ body.modal-open{overflow:hidden}
   flex: 0 0 58px;
   margin: auto;
   filter: none;
+}
+
+#socios.partners-showcase .partner > span:last-child {
+  display: none;
 }
 
 #socios.partners-showcase .partner > span:last-child {
