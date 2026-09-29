@@ -649,6 +649,457 @@ body.modal-open{overflow:hidden}
   }
 }
 
+/* Catálogo completo de obras: cada punto es una carta con espacio para imagen */
+#obras.works-showcase > .container {
+  width: min(1400px, calc(100% - 48px));
+  max-width: 1400px;
+}
+
+#obras.works-showcase .section-head {
+  margin-bottom: 42px;
+}
+
+#obras.works-showcase .project-catalog {
+  display: block;
+}
+
+#obras.works-showcase .work-category {
+  position: relative;
+  margin-bottom: 52px;
+  padding: 42px 42px 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color .5s ease, box-shadow .5s ease;
+}
+
+#obras.works-showcase .work-category:last-child {
+  margin-bottom: 0;
+}
+
+#obras.works-showcase .work-category > h3 {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 30px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.24);
+  color: #fff;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  transform: translateY(5px);
+  transition: transform .45s ease, letter-spacing .45s ease, color .45s ease;
+}
+
+#obras.works-showcase .work-category > h3:after {
+  content: "Explorar categoría  →";
+  display: block;
+  margin-top: 12px;
+  color: var(--blue-light);
+  font-size: .7rem;
+  font-weight: 400;
+  letter-spacing: .14em;
+  opacity: .8;
+  text-transform: uppercase;
+}
+
+#obras.works-showcase .work-items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: max-height .8s ease, opacity .55s ease, transform .7s ease;
+}
+
+#obras.works-showcase .work-item {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(74,126,175,.07);
+  transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+
+#obras.works-showcase .work-category:hover > h3,
+#obras.works-showcase .work-category:focus-visible > h3 {
+  transform: translateY(0);
+  letter-spacing: .05em;
+}
+
+#obras.works-showcase .work-category.is-open {
+  padding-bottom: 42px;
+  cursor: default;
+  box-shadow: 0 18px 42px rgba(74,126,175,.16);
+}
+
+#obras.works-showcase .work-category.is-open .work-items {
+  max-height: 1800px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#obras.works-showcase .work-category.is-open .work-item {
+  animation: workCardReveal .65s ease both;
+}
+
+#obras.works-showcase .work-category.is-open .work-item:nth-child(2) { animation-delay: .08s; }
+#obras.works-showcase .work-category.is-open .work-item:nth-child(3) { animation-delay: .16s; }
+#obras.works-showcase .work-category.is-open .work-item:nth-child(4) { animation-delay: .24s; }
+#obras.works-showcase .work-category.is-open .work-item:nth-child(5) { animation-delay: .32s; }
+#obras.works-showcase .work-category.is-open .work-item:nth-child(6) { animation-delay: .4s; }
+
+@keyframes workCardReveal {
+  from { opacity: 0; filter: blur(8px); transform: translateY(18px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+.work-image-placeholder {
+  position: relative;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-alt), var(--blue-light));
+  color: var(--muted);
+  font-size: .67rem;
+  letter-spacing: .12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.work-image-placeholder:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,.45));
+  opacity: .8;
+  transition: opacity .45s ease, transform .6s ease;
+}
+
+.work-image-placeholder span {
+  position: relative;
+  z-index: 1;
+}
+
+.work-item-content {
+  padding: 20px 22px 24px;
+}
+
+.work-number {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--copper);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+}
+
+.work-item h4 {
+  margin: 0;
+  color: var(--heading);
+  font-size: .92rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+#obras.works-showcase .work-item:hover {
+  transform: translateY(-7px);
+  border-color: var(--blue);
+  box-shadow: 0 18px 38px rgba(74,126,175,.16);
+}
+
+#obras.works-showcase .work-item:hover .work-image-placeholder:before {
+  opacity: .2;
+  transform: scale(1.08);
+}
+
+@media (max-width: 900px) {
+  #obras.works-showcase .work-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  #obras.works-showcase > .container {
+    width: calc(100% - 24px);
+  }
+
+  #obras.works-showcase .work-items {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  #obras.works-showcase .work-category {
+    margin-bottom: 38px;
+    padding: 28px 20px 0;
+  }
+
+  #obras.works-showcase .work-category.is-open {
+    padding-bottom: 28px;
+  }
+
+  .work-image-placeholder {
+    height: 170px;
+  }
+}
+
+/* Portadas visuales para las dos categorías de obras */
+@media (min-width: 701px) {
+  #obras.works-showcase .project-catalog {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 24px;
+  }
+
+  #obras.works-showcase .work-category {
+    min-height: 390px;
+    margin-bottom: 0;
+    padding: 0;
+    background-color: var(--navy);
+    background-position: center;
+    background-size: cover;
+    isolation: isolate;
+  }
+
+  #obras.works-showcase .work-category:nth-child(1) {
+    background-image: url('../img/hero-infraestructura.png');
+  }
+
+  #obras.works-showcase .work-category:nth-child(2) {
+    background-image: url('../img/equipo-saneamiento.png');
+  }
+
+  #obras.works-showcase .work-category:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(63,74,80,.76), rgba(63,74,80,.42));
+    transition: background-color .55s ease, opacity .55s ease;
+  }
+
+  #obras.works-showcase .work-category > h3 {
+    display: grid;
+    place-items: center;
+    height: 390px;
+    margin: 0;
+    padding: 34px;
+    border: 0;
+    color: #fff;
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    line-height: 1.2;
+    text-align: center;
+    text-shadow: 0 3px 16px rgba(0,0,0,.45);
+    transform: none;
+    transition: opacity .45s ease, filter .45s ease, height .55s ease, padding .55s ease;
+  }
+
+  #obras.works-showcase .work-category > h3:after {
+    margin-top: 16px;
+  }
+
+  #obras.works-showcase .work-category .work-items {
+    display: none;
+  }
+
+  #obras.works-showcase .work-category.is-open {
+    min-height: 0;
+    padding: 32px;
+    background-image: none;
+    background-color: var(--navy);
+    cursor: default;
+  }
+
+  #obras.works-showcase .work-category.is-open:before {
+    opacity: .18;
+  }
+
+  #obras.works-showcase .work-category.is-open > h3 {
+    display: block;
+    height: auto;
+    padding: 0 0 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,.24);
+    text-align: left;
+    text-shadow: none;
+  }
+
+  #obras.works-showcase .work-category.is-open .work-items {
+    display: grid;
+    max-height: 1800px;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 700px) {
+  #obras.works-showcase .work-category {
+    min-height: 280px;
+    padding: 0;
+    background-position: center;
+    background-size: cover;
+    isolation: isolate;
+  }
+
+  #obras.works-showcase .work-category:nth-child(1) {
+    background-image: url('../img/hero-infraestructura.png');
+  }
+
+  #obras.works-showcase .work-category:nth-child(2) {
+    background-image: url('../img/equipo-saneamiento.png');
+  }
+
+  #obras.works-showcase .work-category:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(63,74,80,.78), rgba(63,74,80,.42));
+  }
+
+  #obras.works-showcase .work-category > h3 {
+    display: grid;
+    place-items: center;
+    height: 280px;
+    margin: 0;
+    padding: 28px;
+    border: 0;
+    color: #fff;
+    text-align: center;
+  }
+
+  #obras.works-showcase .work-category .work-items {
+    display: none;
+  }
+
+  #obras.works-showcase .work-category.is-open {
+    padding: 24px 18px;
+    background-image: none;
+    background-color: var(--navy);
+  }
+
+  #obras.works-showcase .work-category.is-open > h3 {
+    display: block;
+    height: auto;
+    padding: 0 0 16px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  #obras.works-showcase .work-category.is-open .work-items {
+    display: grid;
+    max-height: 2400px;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+#enlaces {
+  display: none !important;
+}
+
+/* Catálogo de obras con espacio para imágenes y transición suave */
+.project-catalog {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.project-catalog .project-card {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  transition: transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+}
+
+.project-image-placeholder {
+  position: relative;
+  height: 220px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-alt), var(--blue-light));
+  color: var(--muted);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.project-image-placeholder:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,.32));
+  opacity: .8;
+  transition: opacity .45s ease, transform .6s ease;
+}
+
+.project-image-placeholder span {
+  position: relative;
+  z-index: 1;
+}
+
+.project-card-content {
+  position: relative;
+  padding: 26px 28px 30px;
+}
+
+.project-number {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--copper);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+}
+
+.project-catalog .project-card h3 {
+  margin: 0 0 12px;
+  color: var(--heading);
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.project-catalog .project-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.65;
+}
+
+.project-catalog .project-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--blue);
+  box-shadow: 0 18px 38px rgba(74,126,175,.16);
+}
+
+.project-catalog .project-card:hover .project-image-placeholder:before {
+  opacity: .25;
+  transform: scale(1.08);
+}
+
+@media (max-width: 700px) {
+  .project-catalog {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .project-image-placeholder {
+    height: 175px;
+  }
+
+  .project-card-content {
+    padding: 22px;
+  }
+}
+
 /* Navegación con peso regular */
 .navlinks,
 .navlinks a,
@@ -1655,5 +2106,27 @@ header.is-scrolled .brand-logo-white {
   header.is-scrolled .navlinks .contact-btn:hover,
   header.is-scrolled .navlinks .contact-btn:focus {
     color: #fff !important;
+  }
+}
+
+/* Catálogo interactivo: al abrir una categoría, la otra se aparta suavemente. */
+#obras.works-showcase .work-category.is-hidden {
+  max-height: 0;
+  min-height: 0 !important;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: scale(.96);
+  transition: max-height .65s ease, min-height .65s ease, margin .65s ease,
+    padding .65s ease, opacity .45s ease, transform .65s ease;
+}
+
+@media (min-width: 701px) {
+  #obras.works-showcase .work-category.is-open {
+    grid-column: 1 / -1;
   }
 }

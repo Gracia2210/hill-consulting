@@ -2,6 +2,8 @@ const btn = document.getElementById('menuBtn');
 const nav = document.getElementById('navLinks');
 const servicesDropdown = document.querySelector('.nav-dropdown');
 const servicesToggle = document.querySelector('.nav-dropdown-toggle');
+const obrasDropdown = document.querySelectorAll('.nav-dropdown')[1];
+const obrasToggle = obrasDropdown?.querySelector('.nav-dropdown-toggle');
 btn.addEventListener('click', () => {
   nav.classList.toggle('open');
   btn.textContent = nav.classList.contains('open') ? '×' : '☰';
@@ -9,15 +11,19 @@ btn.addEventListener('click', () => {
   if (!nav.classList.contains('open')) {
     servicesDropdown?.classList.remove('submenu-open');
     servicesToggle?.setAttribute('aria-expanded', 'false');
+    obrasDropdown?.classList.remove('submenu-open');
+    obrasToggle?.setAttribute('aria-expanded', 'false');
   }
 });
 document.querySelectorAll('#navLinks a').forEach((a) => a.addEventListener('click', () => {
-  if (a === servicesToggle && window.matchMedia('(max-width: 980px)').matches) return;
+  if ((a === servicesToggle || a === obrasToggle) && window.matchMedia('(max-width: 980px)').matches) return;
   nav.classList.remove('open');
   btn.textContent = '☰';
   btn.setAttribute('aria-expanded', 'false');
   servicesDropdown?.classList.remove('submenu-open');
   servicesToggle?.setAttribute('aria-expanded', 'false');
+  obrasDropdown?.classList.remove('submenu-open');
+  obrasToggle?.setAttribute('aria-expanded', 'false');
 }));
 
 servicesToggle?.setAttribute('aria-expanded', 'false');
@@ -26,6 +32,14 @@ servicesToggle?.addEventListener('click', (event) => {
   event.preventDefault();
   const isOpen = servicesDropdown.classList.toggle('submenu-open');
   servicesToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+});
+
+obrasToggle?.setAttribute('aria-expanded', 'false');
+obrasToggle?.addEventListener('click', (event) => {
+  if (!window.matchMedia('(max-width: 980px)').matches) return;
+  event.preventDefault();
+  const isOpen = obrasDropdown.classList.toggle('submenu-open');
+  obrasToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 });
 
 const backToTop = document.getElementById('backToTop');
@@ -69,6 +83,63 @@ if (partnersShowcase && heroSection) {
     partnerCards.forEach((card) => track.appendChild(card.cloneNode(true)));
     partnerCategories.replaceChildren(track);
   }
+}
+
+// Convierte cada punto de obras realizadas en una carta independiente.
+const worksSection = document.getElementById('obras');
+if (worksSection) {
+  worksSection.classList.add('works-showcase');
+  worksSection.querySelectorAll('.project-card').forEach((categoryCard, index) => {
+    categoryCard.querySelectorAll(':scope > .project-image-placeholder').forEach((placeholder) => placeholder.remove());
+    const title = categoryCard.querySelector('h3');
+    const list = categoryCard.querySelector('ul');
+    if (!title || !list) return;
+
+        const category = document.createElement('div');
+        category.className = 'work-category';
+        category.id = `obras-categoria-${index + 1}`;
+    category.innerHTML = `<h3>${title.textContent}</h3>`;
+    const grid = document.createElement('div');
+    grid.className = 'work-items';
+
+    [...list.querySelectorAll('li')].forEach((item, index) => {
+      const card = document.createElement('article');
+      card.className = 'work-item';
+      card.innerHTML = `
+        <div class="work-image-placeholder"><span>Imagen de la obra ${String(index + 1).padStart(2, '0')}</span></div>
+        <div class="work-item-content">
+          <span class="work-number">${String(index + 1).padStart(2, '0')}</span>
+          <h4>${item.textContent}</h4>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    category.appendChild(grid);
+    category.setAttribute('tabindex', '0');
+    category.setAttribute('role', 'button');
+    category.setAttribute('aria-expanded', 'false');
+    const toggleCategory = () => {
+      const isOpen = !category.classList.contains('is-open');
+      const allCategories = [...worksSection.querySelectorAll('.work-category')];
+      allCategories.forEach((otherCategory) => {
+        otherCategory.classList.toggle('is-open', otherCategory === category && isOpen);
+        otherCategory.classList.toggle('is-hidden', isOpen && otherCategory !== category);
+        otherCategory.setAttribute('aria-expanded', otherCategory === category && isOpen ? 'true' : 'false');
+      });
+      if (!isOpen) allCategories.forEach((otherCategory) => otherCategory.classList.remove('is-hidden'));
+    };
+    category.addEventListener('click', (event) => {
+      if (event.target.closest('.work-item')) return;
+      toggleCategory();
+    });
+    category.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleCategory();
+      }
+    });
+    categoryCard.replaceWith(category);
+  });
 }
 
 const servicesGrid = document.querySelector('.services-grid');
