@@ -105,9 +105,9 @@ if (worksSection) {
       'foto10.png', 'foto6.png', 'foto7.png'
     ]],
     ['Cierre de la Desmontera Esperanza', 'Cierre de la desmontera Esperanza', [
-      'Cierre de la desmontera Esperanza_antes.jpeg',
+      'Cierre de la desmontera Esperanza_antes.png',
       'Cierre de la desmontera Esperanza_durante.jpeg',
-      'Cierre de la desmontera Esperanza_durante2.jpeg',
+      'Cierre de la desmontera Esperanza_durante2.png',
       'Cierre de la desmontera Esperanza_despues.jpeg'
     ]],
     ['Cierre de la Relavera Catedral I', 'Relavera Catedral I', [
@@ -126,6 +126,7 @@ if (worksSection) {
       'El porvenir - PETAR.png'
     ]],
     ['Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas de Relaveras', 'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas', [
+      'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 1.jpeg',
       'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 2.jpeg',
       'foto8.png', 'foto9.png'
     ]],
@@ -163,17 +164,17 @@ if (worksSection) {
   workModal.innerHTML = `
     <div class="work-modal-backdrop" data-work-close></div>
     <section class="work-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="workModalTitle">
-      <button class="work-modal-close" type="button" aria-label="Cerrar galería" data-work-close>&times;</button>
+      <button class="work-modal-close" type="button" aria-label="Cerrar galería" data-work-close><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
       <header class="work-modal-header">
         <span>Obra realizada</span>
         <h3 id="workModalTitle"></h3>
       </header>
       <ul class="work-modal-summary"></ul>
       <div class="work-gallery-main">
-        <button class="work-gallery-arrow work-gallery-prev" type="button" aria-label="Foto anterior">&#8249;</button>
+        <button class="work-gallery-arrow work-gallery-prev" type="button" aria-label="Foto anterior"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
         <img alt="">
         <span class="work-gallery-stage"></span>
-        <button class="work-gallery-arrow work-gallery-next" type="button" aria-label="Foto siguiente">&#8250;</button>
+        <button class="work-gallery-arrow work-gallery-next" type="button" aria-label="Foto siguiente"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
       </div>
       <div class="work-gallery-thumbs" aria-label="Fotografías de la obra"></div>
     </section>`;
@@ -270,17 +271,26 @@ if (worksSection) {
 
         const category = document.createElement('div');
         category.className = 'work-category';
-        if (categoryIndex === 2) category.classList.add('direct-gallery');
         category.id = `obras-categoria-${categoryIndex + 1}`;
-    category.innerHTML = `<h3>${title.textContent}</h3>`;
+    category.innerHTML = `
+      <button class="work-category-back" type="button" aria-label="Volver a las categorías">
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        Volver a categorías
+      </button>
+      <div class="work-category-heading">
+        <span class="work-category-kicker">Obras realizadas</span>
+        <h3>${title.textContent}</h3>
+        <p>Conoce los proyectos ejecutados en esta categoría y accede a su registro fotográfico completo.</p>
+      </div>`;
     const grid = document.createElement('div');
     grid.className = 'work-items';
 
     [...list.querySelectorAll('li')].forEach((item, workIndex) => {
       const workTitle = item.textContent.trim().replace(/\.$/, '');
-      const workImages = workGalleryData.get(normalizeWorkTitle(workTitle)) || [];
       const isGeneralCivilWork = categoryIndex === 2;
       const displayTitle = isGeneralCivilWork ? categoryTitle : workTitle;
+      const galleryTitle = isGeneralCivilWork ? categoryTitle : workTitle;
+      const workImages = workGalleryData.get(normalizeWorkTitle(galleryTitle)) || [];
       const summary = isGeneralCivilWork ? workTitle.split(';') : [];
       const card = document.createElement('article');
       card.className = 'work-item';
@@ -294,7 +304,9 @@ if (worksSection) {
         <div class="work-item-content">
           <span class="work-number">${String(workIndex + 1).padStart(2, '0')}</span>
           <h4>${displayTitle}</h4>
+          <span class="work-category-label">${categoryTitle}</span>
           ${summary.length ? `<ul class="work-summary-list">${summary.map((point) => `<li>${point.trim()}</li>`).join('')}</ul>` : ''}
+          <span class="work-project-link">Ver proyecto <span aria-hidden="true">→</span></span>
         </div>`;
       card.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -324,21 +336,19 @@ if (worksSection) {
       });
       if (!isOpen) allCategories.forEach((otherCategory) => otherCategory.classList.remove('is-hidden'));
     };
+    category.querySelector('.work-category-back').addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleCategory();
+    });
     category.addEventListener('click', (event) => {
-      if (event.target.closest('.work-item')) return;
-      if (category.classList.contains('direct-gallery')) {
-        grid.querySelector('.work-item')?.click();
-        return;
-      }
+      if (event.target.closest('.work-item') || event.target.closest('.work-category-back')) return;
+      if (category.classList.contains('is-open')) return;
       toggleCategory();
     });
     category.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        if (category.classList.contains('direct-gallery')) {
-          grid.querySelector('.work-item')?.click();
-          return;
-        }
+        if (category.classList.contains('is-open')) return;
         toggleCategory();
       }
     });
@@ -347,7 +357,70 @@ if (worksSection) {
 }
 
 const servicesGrid = document.querySelector('.services-grid');
-const serviceCards = servicesGrid ? [...servicesGrid.querySelectorAll('.catalog-card')] : [];
+const serviceOrder = [
+  'servicio-seguridad',
+  'servicio-responsabilidad-social',
+  'servicio-auditorias',
+  'servicio-obras-civiles',
+  'servicio-gestion-ambiental',
+];
+const serviceCards = servicesGrid
+  ? [...servicesGrid.querySelectorAll('.catalog-card')].sort(
+      (firstCard, secondCard) => serviceOrder.indexOf(firstCard.id) - serviceOrder.indexOf(secondCard.id),
+    )
+  : [];
+
+// El orden visible coincide con el orden de navegación del carrusel.
+if (servicesGrid) servicesGrid.append(...serviceCards);
+const serviceDetailDialog = document.getElementById('serviceDetailDialog');
+const serviceDetailTitle = document.getElementById('serviceDetailTitle');
+const serviceDetailBody = document.getElementById('serviceDetailBody');
+const serviceDetailClose = serviceDetailDialog?.querySelector('.service-detail-dialog__close');
+const serviceDetailContact = serviceDetailDialog?.querySelector('.service-detail-contact');
+let serviceDetailTrigger;
+
+function closeServiceDetail() {
+  if (!serviceDetailDialog?.hasAttribute('open')) return;
+  if (typeof serviceDetailDialog.close === 'function') serviceDetailDialog.close();
+  else serviceDetailDialog.removeAttribute('open');
+  document.body.classList.remove('modal-open');
+  serviceDetailTrigger?.focus();
+}
+
+serviceCards.forEach((card) => {
+  const detailButton = card.querySelector('.service-detail-button');
+  detailButton?.addEventListener('click', () => {
+    const title = card.querySelector('h3')?.textContent.trim() || 'Servicio';
+    const fullList = card.querySelector('.service-full-list');
+    const serviceVisual = card.querySelector('.service-visual');
+    if (!serviceDetailDialog || !serviceDetailTitle || !serviceDetailBody || !fullList) return;
+    serviceDetailTrigger = detailButton;
+    serviceDetailTitle.textContent = title;
+    const detailLayout = document.createElement('div');
+    detailLayout.className = 'service-detail-dialog__layout';
+    if (serviceVisual) {
+      const visualClone = serviceVisual.cloneNode(true);
+      visualClone.classList.add('service-detail-dialog__visual');
+      visualClone.removeAttribute('aria-hidden');
+      detailLayout.appendChild(visualClone);
+    }
+    detailLayout.appendChild(fullList.cloneNode(true));
+    serviceDetailBody.replaceChildren(detailLayout);
+    document.body.classList.add('modal-open');
+    if (typeof serviceDetailDialog.showModal === 'function') serviceDetailDialog.showModal();
+    else serviceDetailDialog.setAttribute('open', '');
+    serviceDetailClose?.focus();
+  });
+});
+
+serviceDetailClose?.addEventListener('click', closeServiceDetail);
+serviceDetailContact?.addEventListener('click', () => {
+  closeServiceDetail();
+});
+serviceDetailDialog?.addEventListener('click', (event) => {
+  if (event.target === serviceDetailDialog) closeServiceDetail();
+});
+serviceDetailDialog?.addEventListener('close', () => serviceDetailTrigger?.focus());
 
 function arrangeServiceCards() {
   if (!servicesGrid) return;
@@ -375,8 +448,9 @@ const servicesNext = document.getElementById('servicesNext');
 const serviceDots = document.getElementById('serviceDots');
 let activeServiceIndex = 0;
 let serviceAutoplay;
+const serviceSlideCount = Math.min(3, serviceCards.length);
 
-serviceCards.forEach((card, index) => {
+serviceCards.slice(0, serviceSlideCount).forEach((card, index) => {
   const dot = document.createElement('button');
   dot.type = 'button';
   dot.className = 'service-dot';
@@ -386,7 +460,7 @@ serviceCards.forEach((card, index) => {
 });
 
 function setCurrentService(index) {
-  activeServiceIndex = Math.max(0, Math.min(index, serviceCards.length - 1));
+  activeServiceIndex = Math.max(0, Math.min(index, serviceSlideCount - 1));
   serviceCards.forEach((card, cardIndex) => card.classList.toggle('is-current', cardIndex === activeServiceIndex));
   serviceDots?.querySelectorAll('.service-dot').forEach((dot, dotIndex) => {
     dot.classList.toggle('is-active', dotIndex === activeServiceIndex);
@@ -395,10 +469,18 @@ function setCurrentService(index) {
 }
 
 function goToService(index) {
-  if (!servicesGrid || !serviceCards.length) return;
-  const normalizedIndex = (index + serviceCards.length) % serviceCards.length;
-  servicesGrid.scrollTo({ left: serviceCards[normalizedIndex].offsetLeft - serviceCards[0].offsetLeft, behavior: 'smooth' });
+  if (!servicesGrid || !serviceSlideCount) return;
+  const normalizedIndex = (index + serviceSlideCount) % serviceSlideCount;
+  const targetCard = serviceCards[normalizedIndex];
+  servicesGrid.scrollTo({
+    left: Math.min(targetCard.offsetLeft - serviceCards[0].offsetLeft, servicesGrid.scrollWidth - servicesGrid.clientWidth),
+    behavior: 'smooth',
+  });
   setCurrentService(normalizedIndex);
+  targetCard.classList.remove('is-entering');
+  void targetCard.offsetWidth;
+  targetCard.classList.add('is-entering');
+  window.setTimeout(() => targetCard.classList.remove('is-entering'), 560);
 }
 
 function updateServiceArrows() {
@@ -420,12 +502,42 @@ servicesGrid?.addEventListener('scroll', () => {
     const distance = Math.abs(card.getBoundingClientRect().left - gridLeft);
     return distance < best.distance ? { index, distance } : best;
   }, { index: 0, distance: Infinity });
-  setCurrentService(closest.index);
+  setCurrentService(Math.min(closest.index, serviceSlideCount - 1));
 }, { passive: true });
 
+let serviceDragStartX = 0;
+let serviceDragStartScroll = 0;
+let isDraggingServices = false;
+
+servicesGrid?.addEventListener('pointerdown', (event) => {
+  if (event.target.closest('button, a')) return;
+  isDraggingServices = true;
+  serviceDragStartX = event.clientX;
+  serviceDragStartScroll = servicesGrid.scrollLeft;
+  servicesGrid.setPointerCapture?.(event.pointerId);
+});
+
+servicesGrid?.addEventListener('pointermove', (event) => {
+  if (!isDraggingServices) return;
+  const distance = event.clientX - serviceDragStartX;
+  if (Math.abs(distance) > 3) event.preventDefault();
+  servicesGrid.scrollLeft = serviceDragStartScroll - distance;
+});
+
+function endServiceDrag(event) {
+  if (!isDraggingServices) return;
+  isDraggingServices = false;
+  if (event?.pointerId !== undefined && servicesGrid?.hasPointerCapture?.(event.pointerId)) {
+    servicesGrid.releasePointerCapture(event.pointerId);
+  }
+}
+
+servicesGrid?.addEventListener('pointerup', endServiceDrag);
+servicesGrid?.addEventListener('pointercancel', endServiceDrag);
+
 function startServiceAutoplay() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  clearInterval(serviceAutoplay);
+  stopServiceAutoplay();
+  if (!servicesGrid || serviceSlideCount < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   serviceAutoplay = setInterval(() => goToService(activeServiceIndex + 1), 4500);
 }
 
@@ -463,7 +575,7 @@ const consultantBios = [
 const profileModal = document.createElement('div');
 profileModal.className = 'profile-modal';
 profileModal.hidden = true;
-profileModal.innerHTML = '<div class="profile-modal-backdrop" data-modal-close></div><div class="profile-modal-dialog" role="dialog" aria-modal="true" aria-label="Perfil completo del consultor"><button class="profile-modal-close" type="button" data-modal-close aria-label="Cerrar perfil">&times;</button><div id="profileModalContent"></div></div>';
+profileModal.innerHTML = '<div class="profile-modal-backdrop" data-modal-close></div><div class="profile-modal-dialog" role="dialog" aria-modal="true" aria-label="Perfil completo del consultor"><div class="profile-modal-toolbar"><button class="profile-modal-close" type="button" data-modal-close aria-label="Cerrar perfil"></button></div><div id="profileModalContent"></div></div>';
 document.body.appendChild(profileModal);
 const profileModalContent = profileModal.querySelector('#profileModalContent');
 
@@ -628,3 +740,44 @@ mainNavLinks.forEach((link) => link.addEventListener('click', () => {
   const target = link.getAttribute('href');
   if (target && target.startsWith('#')) setActiveNav(target.slice(1));
 }));
+
+// Revela el contenido al entrar en pantalla, alternando izquierda y derecha.
+// Se aplica al final porque varias tarjetas se construyen dinámicamente arriba.
+const revealGroups = [
+  ['#inicio .hero-inner > *', '#inicio .hero-stat'],
+  ['#nosotros .section-head', '#nosotros .about-grid > *'],
+  ['#consultores .consultant-heading', '#consultores .consultant-profile'],
+  ['#servicios .section-head', '#servicios .catalog-card', '#servicios .service-carousel-controls'],
+  ['#obras .section-head', '#obras .work-category', '#obras .work-item'],
+  ['#socios .section-head', '#socios .partner-category'],
+  ['#enlaces .section-head', '#enlaces .links-grid > *'],
+  ['#contacto .contact > *'],
+];
+
+const revealElements = [];
+revealGroups.forEach((selectors) => {
+  selectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      if (!revealElements.includes(element)) revealElements.push(element);
+    });
+  });
+});
+
+revealElements.forEach((element, index) => {
+  element.classList.add('scroll-reveal', index % 2 === 0 ? 'from-left' : 'from-right');
+  element.style.setProperty('--reveal-delay', `${(index % 3) * 70}ms`);
+});
+
+if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: .12 });
+
+  revealElements.forEach((element) => revealObserver.observe(element));
+} else {
+  revealElements.forEach((element) => element.classList.add('is-revealed'));
+}
