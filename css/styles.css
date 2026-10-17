@@ -4544,3 +4544,24 @@ footer .footer > * {
 .hero .hero-highlight {
   color: var(--navy2) !important;
 }
+
+#nosotros .about-grid > .card > .section-photo {
+  height: clamp(260px, 27vw, 350px);
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (min-width: 981px) {
+  #nosotros .about-grid {
+    align-items: stretch;
+  }
+
+  #nosotros .about-grid > .card {
+    align-self: stretch;
+  }
+
+  #nosotros .about-grid > .mv {
+    height: 100%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+}
