@@ -4499,27 +4499,27 @@ footer .footer > * {
 
 /* Fotografías de obras completas, sin recorte ni zoom al pasar el cursor. */
 #obras .work-image-placeholder.has-image img {
-  object-fit: contain;
-  object-position: center;
+  object-fit: contain !important;
+  object-position: center !important;
 }
 
 #obras .work-item:hover .work-image-placeholder.has-image img,
 #obras .work-item:focus-visible .work-image-placeholder.has-image img {
-  transform: none;
+  transform: none !important;
 }
 
 .work-modal-dialog .work-gallery-main > img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  object-position: center;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
 }
 
 .work-gallery-thumbs img {
-  object-fit: contain;
-  object-position: center;
+  object-fit: contain !important;
+  object-position: center !important;
 }
 
 #servicios .service-detail-gallery {
@@ -4538,4 +4538,9 @@ footer .footer > * {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.hero .eyebrow,
+.hero .hero-highlight {
+  color: var(--navy2) !important;
 }

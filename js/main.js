@@ -387,6 +387,17 @@ let serviceDetailTrigger;
 let serviceGalleryAutoplay;
 let serviceGalleryStartAutoplay;
 const serviceDetailImageSets = new Map([
+  ['servicio-gestion-ambiental', [
+    { src: 'img/servicios/GESTION%20AMBIENTAL.png', alt: 'Gestión ambiental en una zona de operación minera' },
+    { src: 'img/obras/Relavera%20Ponogon/RELAVERA%20PONOGON_antes.png', alt: 'Relavera Ponogon antes de la intervención ambiental' },
+    { src: 'img/obras/Relavera%20Ponogon/RELAVERA%20PONOGON_despues.png', alt: 'Relavera Ponogon después de la intervención ambiental' },
+  ]],
+  ['servicio-auditorias', [
+    { src: 'img/Servicios/Auditorías.jpeg', alt: 'Equipo de auditoría en una operación minera' },
+    { src: 'img/Servicios/Auditoría de sistemas de gestión integrados.jpg', alt: 'Equipo realizando una auditoría de sistemas de gestión integrados' },
+    { src: 'img/obras/mina.png', alt: 'Profesionales inspeccionando las condiciones de seguridad en una mina subterránea' },
+    { src: 'img/obras/MINA%202.jpeg', alt: 'Equipo de trabajo durante una inspección en una mina subterránea' },
+  ]],
   ['servicio-seguridad', [
     { src: 'img/capacitaciones/1.png', alt: 'Capacitación sobre inspecciones de seguridad en minería' },
     { src: 'img/capacitaciones/2.png', alt: 'Personal minero participando en una capacitación de seguridad' },
