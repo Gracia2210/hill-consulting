@@ -125,13 +125,17 @@ if (worksSection) {
       'Instalación de Sistemas de Agua Potable y Alcantarillado 1.png',
       'El porvenir - PETAR.png'
     ]],
+    ['Diseño y Construcción de Plantas de Tratamiento de Aguas Residuales PTAR', '', [
+      'PTAR.jpg'
+    ]],
     ['Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas de Relaveras', 'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas', [
       'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 1.jpeg',
       'Ejecución de la Infraestructura de los Sistemas de Tratamiento Pasivo de Aguas Ácidas 2.jpeg',
       'foto8.png', 'foto9.png'
     ]],
     ['Ejecución y elaboración de expedientes técnicos de obras civiles', 'EJECUCIÓN Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES', [
-      'EJECUCIÓN Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES.jpeg'
+      'EJECUCIÓN Y ELABORACIÓN DE EXPEDIENTES TÉCNICOS DE OBRAS CIVILES.jpeg',
+      'LEVANTAMIENTO TOPOGRAFICO DE LINEA DE CONDUCCION.png'
     ]]
   ].map(([title, folder, files]) => [
     normalizeWorkTitle(title),
@@ -139,7 +143,9 @@ if (worksSection) {
       const normalizedFile = normalizeWorkTitle(file);
       let stage = 'Proceso';
       let stageOrder = 1;
-      if (normalizedFile.includes('antes')) {
+      if (normalizedFile.includes('levantamiento topografico de linea de conduccion')) {
+        stage = 'Levantamiento topográfico';
+      } else if (normalizedFile.includes('antes')) {
         stage = 'Antes';
         stageOrder = 0;
       } else if (normalizedFile.includes('durante')) {
@@ -150,7 +156,7 @@ if (worksSection) {
         stageOrder = 2;
       }
       return {
-        src: encodeURI(`img/obras/${folder}/${file}`),
+        src: encodeURI(folder ? `img/obras/${folder}/${file}` : `img/obras/${file}`),
         stage,
         stageOrder,
         originalOrder: fileIndex
@@ -217,6 +223,7 @@ if (worksSection) {
       modalSummary.appendChild(item);
     });
     modalThumbs.replaceChildren();
+    modalThumbs.hidden = images.length < 2;
     modalMain.classList.toggle('is-empty', !images.length);
     modalPrev.hidden = images.length < 2;
     modalNext.hidden = images.length < 2;
@@ -361,7 +368,6 @@ const serviceOrder = [
   'servicio-seguridad',
   'servicio-responsabilidad-social',
   'servicio-auditorias',
-  'servicio-obras-civiles',
   'servicio-gestion-ambiental',
 ];
 const serviceCards = servicesGrid
@@ -378,8 +384,28 @@ const serviceDetailBody = document.getElementById('serviceDetailBody');
 const serviceDetailClose = serviceDetailDialog?.querySelector('.service-detail-dialog__close');
 const serviceDetailContact = serviceDetailDialog?.querySelector('.service-detail-contact');
 let serviceDetailTrigger;
+let serviceGalleryAutoplay;
+let serviceGalleryStartAutoplay;
+const serviceDetailImageSets = new Map([
+  ['servicio-seguridad', [
+    { src: 'img/capacitaciones/1.png', alt: 'Capacitación sobre inspecciones de seguridad en minería' },
+    { src: 'img/capacitaciones/2.png', alt: 'Personal minero participando en una capacitación de seguridad' },
+    { src: 'img/capacitaciones/3.png', alt: 'Exposición sobre los pasos del proceso de inspección' },
+    { src: 'img/capacitaciones/4.png', alt: 'Instructor explicando criterios para inspecciones de seguridad' },
+    { src: 'img/capacitaciones/5.png', alt: 'Capacitación sobre accidentes comunes en minería' },
+    { src: 'img/capacitaciones/Imagen3.png', alt: 'Personal minero participando en una capacitación grupal' },
+    { src: 'img/capacitaciones/Imagen4.png', alt: 'Instructor capacitando a trabajadores sobre identificación de peligros' },
+  ]],
+]);
+
+function stopServiceGalleryAutoplay() {
+  window.clearInterval(serviceGalleryAutoplay);
+  serviceGalleryAutoplay = undefined;
+}
 
 function closeServiceDetail() {
+  stopServiceGalleryAutoplay();
+  serviceGalleryStartAutoplay = undefined;
   if (!serviceDetailDialog?.hasAttribute('open')) return;
   if (typeof serviceDetailDialog.close === 'function') serviceDetailDialog.close();
   else serviceDetailDialog.removeAttribute('open');
@@ -399,16 +425,107 @@ serviceCards.forEach((card) => {
     const detailLayout = document.createElement('div');
     detailLayout.className = 'service-detail-dialog__layout';
     if (serviceVisual) {
-      const visualClone = serviceVisual.cloneNode(true);
-      visualClone.classList.add('service-detail-dialog__visual');
-      visualClone.removeAttribute('aria-hidden');
-      detailLayout.appendChild(visualClone);
+      const detailImages = serviceDetailImageSets.get(card.id) || [
+        { src: serviceVisual.dataset.detailImage, alt: serviceVisual.dataset.detailImageAlt },
+        { src: serviceVisual.dataset.detailImageNext, alt: serviceVisual.dataset.detailImageNextAlt },
+      ].filter((image) => image.src);
+
+      if (detailImages.length > 1) {
+        const gallery = document.createElement('div');
+        gallery.className = 'service-detail-gallery';
+        gallery.setAttribute('role', 'group');
+        gallery.setAttribute('aria-label', `${title}: galería de imágenes`);
+
+        const slides = detailImages.map((image, index) => {
+          const slide = serviceVisual.cloneNode(false);
+          slide.classList.add('service-detail-dialog__visual');
+          slide.classList.toggle('is-active', index === 0);
+          slide.style.backgroundImage = `url("${image.src}")`;
+          slide.setAttribute('role', 'img');
+          slide.setAttribute('aria-label', image.alt || title);
+          slide.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
+          gallery.appendChild(slide);
+          return slide;
+        });
+
+        const previous = document.createElement('button');
+        previous.type = 'button';
+        previous.className = 'service-detail-gallery__arrow service-detail-gallery__arrow--previous';
+        previous.setAttribute('aria-label', 'Ver imagen anterior');
+        previous.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>';
+
+        const next = document.createElement('button');
+        next.type = 'button';
+        next.className = 'service-detail-gallery__arrow service-detail-gallery__arrow--next';
+        next.setAttribute('aria-label', 'Ver imagen siguiente');
+        next.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>';
+
+        const indicators = document.createElement('div');
+        indicators.className = 'service-detail-gallery__indicators';
+        indicators.setAttribute('aria-label', 'Seleccionar imagen');
+        const dots = detailImages.map((image, index) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'service-detail-gallery__dot';
+          dot.setAttribute('aria-label', `Ver imagen ${index + 1} de ${detailImages.length}`);
+          dot.setAttribute('aria-current', index === 0 ? 'true' : 'false');
+          dot.addEventListener('click', () => showSlide(index));
+          indicators.appendChild(dot);
+          return dot;
+        });
+
+        let activeSlide = 0;
+        function showSlide(index) {
+          activeSlide = (index + slides.length) % slides.length;
+          slides.forEach((slide, slideIndex) => {
+            const isActive = slideIndex === activeSlide;
+            slide.classList.toggle('is-active', isActive);
+            slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+          });
+          dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', dotIndex === activeSlide ? 'true' : 'false'));
+        }
+
+        const startGalleryAutoplay = () => {
+          stopServiceGalleryAutoplay();
+          if (
+            document.hidden
+            || !serviceDetailDialog?.hasAttribute('open')
+            || gallery.matches(':hover')
+            || gallery.contains(document.activeElement)
+            || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ) return;
+          serviceGalleryAutoplay = window.setInterval(() => showSlide(activeSlide + 1), 5000);
+        };
+        serviceGalleryStartAutoplay = startGalleryAutoplay;
+        gallery.addEventListener('mouseenter', stopServiceGalleryAutoplay);
+        gallery.addEventListener('mouseleave', startGalleryAutoplay);
+        gallery.addEventListener('focusin', stopServiceGalleryAutoplay);
+        gallery.addEventListener('focusout', (event) => {
+          if (!gallery.contains(event.relatedTarget)) startGalleryAutoplay();
+        });
+
+        previous.addEventListener('click', () => showSlide(activeSlide - 1));
+        next.addEventListener('click', () => showSlide(activeSlide + 1));
+        gallery.append(previous, next, indicators);
+        detailLayout.appendChild(gallery);
+      } else {
+        const visualClone = serviceVisual.cloneNode(true);
+        visualClone.classList.add('service-detail-dialog__visual');
+        visualClone.removeAttribute('aria-hidden');
+        if (detailImages[0]) {
+          visualClone.style.backgroundImage = `url("${detailImages[0].src}")`;
+          visualClone.setAttribute('role', 'img');
+          visualClone.setAttribute('aria-label', detailImages[0].alt || title);
+        }
+        detailLayout.appendChild(visualClone);
+      }
     }
     detailLayout.appendChild(fullList.cloneNode(true));
     serviceDetailBody.replaceChildren(detailLayout);
     document.body.classList.add('modal-open');
     if (typeof serviceDetailDialog.showModal === 'function') serviceDetailDialog.showModal();
     else serviceDetailDialog.setAttribute('open', '');
+    serviceGalleryStartAutoplay?.();
     serviceDetailClose?.focus();
   });
 });
@@ -420,7 +537,16 @@ serviceDetailContact?.addEventListener('click', () => {
 serviceDetailDialog?.addEventListener('click', (event) => {
   if (event.target === serviceDetailDialog) closeServiceDetail();
 });
-serviceDetailDialog?.addEventListener('close', () => serviceDetailTrigger?.focus());
+serviceDetailDialog?.addEventListener('close', () => {
+  stopServiceGalleryAutoplay();
+  serviceGalleryStartAutoplay = undefined;
+  serviceDetailTrigger?.focus();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopServiceGalleryAutoplay();
+  else serviceGalleryStartAutoplay?.();
+});
 
 function arrangeServiceCards() {
   if (!servicesGrid) return;
@@ -559,6 +685,38 @@ document.addEventListener('visibilitychange', () => {
   else startServiceAutoplay();
 });
 
+const consultantList = document.querySelector('.consultants-list');
+const consultantDirectory = [
+  { name: 'Ing. Adalson Javier Torres Zegarra', photo: 'img/equipo/Adalson Torres.png' },
+  { name: 'Martin Campos Reyes', photo: 'img/equipo/Martin Campos.png' },
+  { name: 'Eddie Hildejardez Torres Zegarra', photo: 'img/equipo/Eddie Torres.png' },
+  { name: 'Kelvis Berrocal Argumedo', photo: 'img/equipo/Kelvis Berrocal.png' },
+  { name: 'Héctor Ricardi Ascaño', photo: 'img/equipo/Hector Ricardi.png' },
+  { name: 'Linet Gonzales Caytuiro', photo: 'img/equipo/Linet Gonzales.png' }
+];
+if (consultantList) {
+  const profiles = [...consultantList.querySelectorAll('.consultant-profile')];
+  const profilesByName = new Map(profiles.map((profile) => [
+    profile.querySelector('.consultant-title h3')?.textContent.trim(),
+    profile
+  ]));
+  const orderedProfiles = consultantDirectory.map(({ name }) => profilesByName.get(name)).filter(Boolean);
+  const orderedSet = new Set(orderedProfiles);
+  [...orderedProfiles, ...profiles.filter((profile) => !orderedSet.has(profile))]
+    .forEach((profile) => {
+      consultantList.appendChild(profile);
+      const profileName = profile.querySelector('.consultant-title h3')?.textContent.trim();
+      const consultant = consultantDirectory.find(({ name }) => name === profileName);
+      const title = profile.querySelector('.consultant-title');
+      if (!consultant || !title || title.querySelector('.consultant-photo')) return;
+      const photo = document.createElement('img');
+      photo.className = 'consultant-photo';
+      photo.src = encodeURI(consultant.photo);
+      photo.alt = `Fotografía de ${profileName}`;
+      photo.loading = 'lazy';
+      title.prepend(photo);
+    });
+}
 const consultantCards = [...document.querySelectorAll('.consultants-list .consultant-profile')];
 const consultantHighlights = [
   ['Gesti\u00f3n integrada', 'Auditor\u00edas', '+25 a\u00f1os de experiencia'],
@@ -574,7 +732,20 @@ const consultantBios = [
   'Auditor acreditado por el MTPE para auditorías de Seguridad y Salud en el Trabajo. R.D. N.° 040-2024-MTPE/1/20.3. Auditor de Sistemas de Gestión bajo las normas ISO 9001:2015, ISO 14001:2026, ISO 45001:2018 e ISO 39001:2013. Profesional con sólida experiencia en Seguridad y Salud en el Trabajo, Sistemas Integrados de Gestión y SSOMA, orientado a fortalecer el cumplimiento normativo, generar valor y contribuir a la mejora continua de las organizaciones.',
   'Ingeniero de Minas con trayectoria gerencial y operativa en minería, sistemas integrados de gestión y prevención de riesgos. Experiencia en proyectos de Perú y Bolivia. Egresado de la Maestría en Seguridad y Salud Minera de la UNI y auditor acreditado ante el Ministerio de Trabajo, R.S.D. N.° 012-2026-GRA/GG-GRDS-DRTPE SDPSCLDFSST. Profesional con sólido conocimiento en normativas de seguridad minera, gestión de riesgos y competencias en Seguridad y Salud en el Trabajo, Sistemas Integrados de Gestión y SSOMA. Se caracteriza por su alta capacidad de adaptación, proactividad, responsabilidad, buenas relaciones interpersonales, liderazgo, trabajo en equipo e iniciativa para resolver problemas y lograr las metas trazadas para las organizaciones.'
 ];
+consultantBios.push(
+  'Ingeniera titulada y colegiada (CIP 153911), especialista en Seguridad, Salud Ocupacional y Medio Ambiente, con 10 años de experiencia en el sector y operaciones mineras. Cuenta con experiencia en auditorías externas al SGSSO en diversas empresas mineras, liderando estos procesos, así como en la implementación, mantenimiento y mejora continua de Sistemas Integrados de Gestión. '
+  + 'Tiene experiencia en auditoría e implementación conforme a la Ley N.° 29783, el D.S. N.° 005-2012-TR, el D.S. N.° 024-2016-EM y otras normas vigentes; en sistemas de calidad, medio ambiente, seguridad y salud ocupacional bajo ISO 9001, ISO 14001, ISO 45001 y OHSAS 18001; y en gestión y manejo de residuos sólidos conforme a la Ley N.° 1278 y su reglamento. '
+  + 'Su trayectoria incluye supervisión, capacitación y auditorías. Cuenta con registro MTPE según Resolución Directoral N.° 91-2019-MTPE/1/20.3 y está autorizada para realizar auditorías del Sistema de Gestión de Seguridad y Salud en el Trabajo a nivel nacional. Se caracteriza por su liderazgo, proactividad y orientación a resultados.'
+);
 const profileModal = document.createElement('div');
+const consultantBiosByName = new Map([
+  ['Ing. Adalson Javier Torres Zegarra', consultantBios[0]],
+  ['Héctor Ricardi Ascaño', consultantBios[1]],
+  ['Kelvis Berrocal Argumedo', consultantBios[2]],
+  ['Martin Campos Reyes', consultantBios[3]],
+  ['Eddie Hildejardez Torres Zegarra', consultantBios[4]],
+  ['Linet Gonzales Caytuiro', consultantBios[5]]
+]);
 profileModal.className = 'profile-modal';
 profileModal.hidden = true;
 profileModal.innerHTML = '<div class="profile-modal-backdrop" data-modal-close></div><div class="profile-modal-dialog" role="dialog" aria-modal="true" aria-label="Perfil completo del consultor"><div class="profile-modal-toolbar"><button class="profile-modal-close" type="button" data-modal-close aria-label="Cerrar perfil"></button></div><div id="profileModalContent"></div></div>';
@@ -593,7 +764,9 @@ function openConsultantProfile(card, index) {
   clone.querySelector('.consultant-details')?.remove();
   const details = document.createElement('div');
   details.className = 'consultant-details consultant-details-single';
-  details.innerHTML = `<div class="consultant-bio"><h3>Perfil profesional</h3><p>${consultantBios[index] || ''}</p></div>`;
+  const consultantName = card.querySelector('.consultant-title h3')?.textContent.trim();
+  const biography = consultantBiosByName.get(consultantName) || consultantBios[index] || '';
+  details.innerHTML = `<div class="consultant-bio"><h3>Perfil profesional</h3><p>${biography}</p></div>`;
   clone.appendChild(details);
   profileModalContent.replaceChildren(clone);
   profileModal.hidden = false;
